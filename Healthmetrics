@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Calculators Hub</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      background: linear-gradient(135deg, #0a0a0a, #2e003e);
+      color: white;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #111;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 15px rgba(0, 255, 136, 0.2);
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      color: #9d4edd;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 12px;
+      margin: 5px 0;
+      text-align: left;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .menu-btn:hover, .menu-btn.active {
+      background: linear-gradient(135deg, #9d4edd, #00ff88);
+      color: black;
+      font-weight: bold;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #00ff88;
+      margin-bottom: 15px;
+    }
+
+    form {
+      max-width: 500px;
+      background: #1a1a1a;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      color: #b8f1b0;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: #222;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #9d4edd, #00ff88);
+      border: none;
+      border-radius: 12px;
+      color: black;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      box-shadow: 0 0 20px #00ff88;
+      transform: translateY(-2px);
+    }
+
+    .results, .tips {
+      margin-top: 20px;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 12px;
+    }
+
+    .result-box {
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(0, 255, 136, 0.08);
+      border-left: 4px solid #9d4edd;
+    }
+
+    .result-box h3 {
+      margin: 0;
+      color: #00ff88;
+    }
+
+    .tips {
+      font-size: 0.9rem;
+      color: #ddd;
+      border-left: 4px solid #00ff88;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+      }
+      .menu-btn {
+        flex: 1;
+        text-align: center;
+        margin: 3px;
+      }
+      .main {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Calculators</h2>
+    <button class="menu-btn active" onclick="showCalc('bmi')">BMI</button>
+    <button class="menu-btn" onclick="showCalc('bmr')">BMR</button>
+    <button class="menu-btn" onclick="showCalc('calories')">Calories (Gain/Lose)</button>
+    <button class="menu-btn" onclick="showCalc('fat')">Body Fat %</button>
+    <button class="menu-btn" onclick="showCalc('pace')">Pace</button>
+    <button class="menu-btn" onclick="showCalc('tdee')">TDEE</button>
+    <button class="menu-btn" onclick="showCalc('fatIntake')">Fat Intake</button>
+    <button class="menu-btn" onclick="showCalc('protein')">Protein Intake</button>
+    <button class="menu-btn" onclick="showCalc('water')">Water Intake</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- BMI -->
+    <div id="bmi" class="calc-section">
+      <h1>BMI Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcBMI();">
+        <label>Height (cm)</label><input type="number" id="bmiHeight" required>
+        <label>Weight (kg)</label><input type="number" id="bmiWeight" required>
+        <button type="submit">Calculate BMI</button>
+      </form>
+      <div class="results" id="bmiResult"></div>
+      <div class="tips">Tip: A BMI of 18.5–24.9 is considered healthy. Use BMI as a rough guide, not as the sole measure of health.</div>
+    </div>
+
+    <!-- BMR -->
+    <div id="bmr" class="calc-section" style="display:none;">
+      <h1>BMR Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcBMR();">
+        <label>Age</label><input type="number" id="bmrAge" required>
+        <label>Gender</label>
+        <select id="bmrGender"><option value="male">Male</option><option value="female">Female</option></select>
+        <label>Height (cm)</label><input type="number" id="bmrHeight" required>
+        <label>Weight (kg)</label><input type="number" id="bmrWeight" required>
+        <button type="submit">Calculate BMR</button>
+      </form>
+      <div class="results" id="bmrResult"></div>
+      <div class="tips">Tip: BMR is the calories your body burns at rest. Use it as a baseline to plan your nutrition.</div>
+    </div>
+
+    <!-- Calories -->
+    <div id="calories" class="calc-section" style="display:none;">
+      <h1>Calories for Weight Goals</h1>
+      <form onsubmit="event.preventDefault(); calcCalories();">
+        <label>Age</label><input type="number" id="calAge" required>
+        <label>Gender</label>
+        <select id="calGender"><option value="male">Male</option><option value="female">Female</option></select>
+        <label>Height (cm)</label><input type="number" id="calHeight" required>
+        <label>Weight (kg)</label><input type="number" id="calWeight" required>
+        <label>Activity</label>
+        <select id="calActivity">
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Lightly active</option>
+          <option value="1.55">Moderately active</option>
+          <option value="1.725">Very active</option>
+          <option value="1.9">Super active</option>
+        </select>
+        <button type="submit">Calculate</button>
+      </form>
+      <div class="results" id="calResult"></div>
+      <div class="tips">Tip: A surplus of ~500 calories/day helps gain ~0.5kg per week. A deficit of ~500 calories/day helps lose ~0.5kg per week.</div>
+    </div>
+
+    <!-- Body Fat % -->
+    <div id="fat" class="calc-section" style="display:none;">
+      <h1>Body Fat % Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcFat();">
+        <label>Gender</label>
+        <select id="fatGender"><option value="male">Male</option><option value="female">Female</option></select>
+        <label>Height (cm)</label><input type="number" id="fatHeight" required>
+        <label>Neck (cm)</label><input type="number" id="fatNeck" required>
+        <label>Waist (cm)</label><input type="number" id="fatWaist" required>
+        <label>Hip (cm, females only)</label><input type="number" id="fatHip">
+        <button type="submit">Calculate Body Fat %</button>
+      </form>
+      <div class="results" id="fatResult"></div>
+      <div class="tips">Tip: Healthy ranges — Men: 10–20%, Women: 18–28%. Athletes may have lower percentages.</div>
+    </div>
+
+    <!-- Pace -->
+    <div id="pace" class="calc-section" style="display:none;">
+      <h1>Pace Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcPace();">
+        <label>Distance (km)</label><input type="number" id="paceDist" required>
+        <label>Time (minutes)</label><input type="number" id="paceTime" required>
+        <button type="submit">Calculate Pace</button>
+      </form>
+      <div class="results" id="paceResult"></div>
+      <div class="tips">Tip: Use pace to track running performance. Lower pace = faster speed.</div>
+    </div>
+
+    <!-- TDEE -->
+    <div id="tdee" class="calc-section" style="display:none;">
+      <h1>TDEE Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcTDEE();">
+        <label>Age</label><input type="number" id="tdeeAge" required>
+        <label>Gender</label>
+        <select id="tdeeGender"><option value="male">Male</option><option value="female">Female</option></select>
+        <label>Height (cm)</label><input type="number" id="tdeeHeight" required>
+        <label>Weight (kg)</label><input type="number" id="tdeeWeight" required>
+        <label>Activity</label>
+        <select id="tdeeActivity">
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Lightly active</option>
+          <option value="1.55">Moderately active</option>
+          <option value="1.725">Very active</option>
+          <option value="1.9">Super active</option>
+        </select>
+        <button type="submit">Calculate TDEE</button>
+      </form>
+      <div class="results" id="tdeeResult"></div>
+      <div class="tips">Tip: TDEE = calories burned daily including activities. Great for planning maintenance calories.</div>
+    </div>
+
+    <!-- Fat Intake -->
+    <div id="fatIntake" class="calc-section" style="display:none;">
+      <h1>Fat Intake Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcFatIntake();">
+        <label>Daily Calories</label><input type="number" id="fatCal" required>
+        <button type="submit">Calculate Fat Intake</button>
+      </form>
+      <div class="results" id="fatIntakeResult"></div>
+      <div class="tips">Tip: Aim for 20–35% of daily calories from healthy fats (avocados, nuts, olive oil).</div>
+    </div>
+
+    <!-- Protein Intake -->
+    <div id="protein" class="calc-section" style="display:none;">
+      <h1>Protein Intake Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcProtein();">
+        <label>Weight (kg)</label><input type="number" id="proteinWeight" required>
+        <button type="submit">Calculate Protein Intake</button>
+      </form>
+      <div class="results" id="proteinResult"></div>
+      <div class="tips">Tip: For muscle growth aim 1.6–2.2g protein per kg of body weight.</div>
+    </div>
+
+    <!-- Water Intake -->
+    <div id="water" class="calc-section" style="display:none;">
+      <h1>Water Intake Calculator</h1>
+      <form onsubmit="event.preventDefault(); calcWater();">
+        <label>Weight (kg)</label><input type="number" id="waterWeight" required>
+        <button type="submit">Calculate Water Intake</button>
+      </form>
+      <div class="results" id="waterResult"></div>
+      <div class="tips">Tip: A general guideline is ~35ml per kg of body weight per day.</div>
+    </div>
+  </div>
+
+  <script>
+    // Sidebar switching
+    function showCalc(id) {
+      document.querySelectorAll(".calc-section").forEach(sec => sec.style.display = "none");
+      document.getElementById(id).style.display = "block";
+      document.querySelectorAll(".menu-btn").forEach(btn => btn.classList.remove("active"));
+      event.target.classList.add("active");
+    }
+
+    // BMI
+    function calcBMI() {
+      let h = parseFloat(document.getElementById("bmiHeight").value) / 100;
+      let w = parseFloat(document.getElementById("bmiWeight").value);
+      let bmi = (w / (h * h)).toFixed(1);
+      let status = (bmi < 18.5) ? "Underweight" : (bmi < 25) ? "Normal" : (bmi < 30) ? "Overweight" : "Obese";
+      document.getElementById("bmiResult").innerHTML = `<div class="result-box"><h3>Your BMI</h3><p>${bmi} (${status})</p></div>`;
+    }
+
+    // BMR
+    function calcBMR() {
+      let age = +document.getElementById("bmrAge").value;
+      let g = document.getElementById("bmrGender").value;
+      let h = +document.getElementById("bmrHeight").value;
+      let w = +document.getElementById("bmrWeight").value;
+      let bmr = (g==="male") ? 88.362+(13.397*w)+(4.799*h)-(5.677*age) : 447.593+(9.247*w)+(3.098*h)-(4.33*age);
+      document.getElementById("bmrResult").innerHTML = `<div class="result-box"><h3>Your BMR</h3><p>${bmr.toFixed(0)} cal/day</p></div>`;
+    }
+
+    // Calories
+    function calcCalories() {
+      let age = +document.getElementById("calAge").value;
+      let g = document.getElementById("calGender").value;
+      let h = +document.getElementById("calHeight").value;
+      let w = +document.getElementById("calWeight").value;
+      let act = +document.getElementById("calActivity").value;
+      let bmr = (g==="male") ? 88.362+(13.397*w)+(4.799*h)-(5.677*age) : 447.593+(9.247*w)+(3.098*h)-(4.33*age);
+      let tdee = bmr*act;
+      document.getElementById("calResult").innerHTML =
+        `<div class="result-box"><h3>Maintenance</h3><p>${tdee.toFixed(0)} cal/day</p></div>
+         <div class="result-box"><h3>Gain Weight</h3><p>${(tdee+500).toFixed(0)} cal/day</p></div>
+         <div class="result-box"><h3>Lose Weight</h3><p>${(tdee-500).toFixed(0)} cal/day</p></div>`;
+    }
+
+    // Body Fat
+    function calcFat() {
+      let g = document.getElementById("fatGender").value;
+      let h = +document.getElementById("fatHeight").value;
+      let neck = +document.getElementById("fatNeck").value;
+      let waist = +document.getElementById("fatWaist").value;
+      let hip = +document.getElementById("fatHip").value || 0;
+      let fat;
+      if(g==="male") {
+        fat = 495/(1.0324 - 0.19077*Math.log10(waist-neck) + 0.15456*Math.log10(h)) - 450;
+      } else {
+        fat = 495/(1.29579 - 0.35004*Math.log10(waist+hip-neck) + 0.22100*Math.log10(h)) - 450;
+      }
+      document.getElementById("fatResult").innerHTML = `<div class="result-box"><h3>Body Fat %</h3><p>${fat.toFixed(1)}%</p></div>`;
+    }
+
+    // Pace
+    function calcPace() {
+      let dist = +document.getElementById("paceDist").value;
+      let time = +document.getElementById("paceTime").value;
+      let pace = (time/dist).toFixed(2);
+      document.getElementById("paceResult").innerHTML = `<div class="result-box"><h3>Pace</h3><p>${pace} min/km</p></div>`;
+    }
+
+    // TDEE
+    function calcTDEE() {
+      let age = +document.getElementById("tdeeAge").value;
+      let g = document.getElementById("tdeeGender").value;
+      let h = +document.getElementById("tdeeHeight").value;
+      let w = +document.getElementById("tdeeWeight").value;
+      let act = +document.getElementById("tdeeActivity").value;
+      let bmr = (g==="male") ? 88.362+(13.397*w)+(4.799*h)-(5.677*age) : 447.593+(9.247*w)+(3.098*h)-(4.33*age);
+      let tdee = bmr*act;
+      document.getElementById("tdeeResult").innerHTML = `<div class="result-box"><h3>Your TDEE</h3><p>${tdee.toFixed(0)} cal/day</p></div>`;
+    }
+
+    // Fat Intake
+    function calcFatIntake() {
+      let cal = +document.getElementById("fatCal").value;
+      let fatMin = (cal*0.2/9).toFixed(1);
+      let fatMax = (cal*0.35/9).toFixed(1);
+      document.getElementById("fatIntakeResult").innerHTML = `<div class="result-box"><h3>Recommended Fat</h3><p>${fatMin}–${fatMax} g/day</p></div>`;
+    }
+
+    // Protein
+    function calcProtein() {
+      let w = +document.getElementById("proteinWeight").value;
+      let min = (w*1.6).toFixed(1), max = (w*2.2).toFixed(1);
+      document.getElementById("proteinResult").innerHTML = `<div class="result-box"><h3>Protein Range</h3><p>${min}–${max} g/day</p></div>`;
+    }
+
+    // Water
+    function calcWater() {
+      let w = +document.getElementById("waterWeight").value;
+      let water = (w*35).toFixed(0);
+      document.getElementById("waterResult").innerHTML = `<div class="result-box"><h3>Water Intake</h3><p>${water} ml/day</p></div>`;
+    }
+  </script>
+</body>
+</html>
