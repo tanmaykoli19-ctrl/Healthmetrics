@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - HealthMetrics</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main">
+    <h1>About Us</h1>
+    <p>Welcome to <strong>HealthMetrics</strong>, your one-stop hub for simple, powerful health calculators. 
+    Our mission is to make fitness and wellness tracking easy for everyone. Whether you want to check your BMI, 
+    calculate your daily calorie needs, or optimize your hydration, our tools are here to help.</p>
+
+    <p>We believe health is wealth, and with the right information, you can make better lifestyle choices every day.</p>
+    <a href="index.html">← Back to Home</a>
+  </div>
+</body>
+</html>
